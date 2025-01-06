@@ -6,7 +6,6 @@ const store = useStore()
 const router = useRouter()
 
 const logout = () => {
-    store.userInfo.loggedIn = false
     router.push("/")
     console.log(store.userInfo)
 }
@@ -19,7 +18,7 @@ const logout = () => {
                 <img src="/src/assets/logo.png" alt="FlickerPix Logo">
                 <h2 class="logo-text">FlickerPix</h2>
             </RouterLink>
-            <div class="header-content wide" v-if="store.userInfo.loggedIn == false">
+            <div class="header-content wide" v-if="store.userInfo.firstName == null">
                 <RouterLink to="/register" class="button">Sign Up</RouterLink>
                 <RouterLink to="/login" class="button">Sign In</RouterLink>
             </div>

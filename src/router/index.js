@@ -7,19 +7,34 @@ import DetailsView from '../views/DetailsView.vue';
 import CartView from '../views/CartView.vue';
 import SettingsView from '../views/SettingsView.vue';
 import ErrorView from '@/views/ErrorView.vue';
+import { useStore } from '@/store';
+
+const routes = [
+  { path: '/', meta: { auth: false }, component: HomeView, },
+  { path: '/register', meta: { auth: false }, component: RegisterView },
+  { path: '/login', meta: { auth: false }, component: LoginView },
+  { path: '/movies', meta: { auth: true }, component: MoviesView },
+  { path: '/movies/:id', meta: { auth: true }, component: DetailsView },
+  { path: '/cart', meta: { auth: true }, component: CartView },
+  { path: '/settings', meta: { auth: true }, component: SettingsView },
+  { path: '/:pathMatch(.*)*', meta: { auth: false }, component: ErrorView, }
+]
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
-  routes: [
-    { path: '/', name: 'home', component: HomeView, },
-    { path: '/register', component: RegisterView },
-    { path: '/login', component: LoginView },
-    { path: '/movies', component: MoviesView },
-    { path: '/movies/:id', component: DetailsView },
-    { path: '/cart', component: CartView },
-    { path: '/settings', component: SettingsView },
-    { path: '/:pathMatch(.*)*', component: ErrorView, }
-  ],
+  history: createWebHistory(),
+  routes,
 })
+
+//router.beforeEach((to, from, next) => {
+  //userAuthorised.then(() => {
+    //const store = useStore();
+
+    //if (!store.user && to.meta.auth) {
+      //next("/login");
+    //} else {
+      //next();
+    //}
+  //})
+//})
 
 export default router

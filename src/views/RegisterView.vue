@@ -4,19 +4,21 @@ import Footer from '../components/Footer.vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { useStore } from '../store';
+import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { auth } from '@/firebase';
 
 const router = useRouter();
-const userInfo = ref({firstName:"", lastName:"", email:"", password:"", loggedIn:true});
-const rePassword = ref("")
+const userInfo = ref({ firstName: "", lastName: "", email: "", password: "", rePassword: "" });
 const store = useStore();
 
-const register = () => {
-    if (userInfo.value.password == rePassword.value) {
+async function registerbyEmail() {
+    try {
+        const user = (await createUserWithEmailAndPassword(auth, userInfo.value.email, userInfo.value.password)).user;
+        await updateProfile(user, { displayName: `${userInfo.value.firstName}` `${userInfo.value.lastName}` });
+        store.user = user;
         router.push("/movies");
-        store.userInfo = userInfo.value;
-    }
-    else {
-        alert("Passwords must match!");
+    } catch (error) {
+        alert("There was an error creating a user with email!")
     }
 }
 </script>
@@ -24,7 +26,7 @@ const register = () => {
 <template>
     <Header />
     <div class="register">
-        <form @submit.prevent="register()">
+        <form @submit.prevent="registerbyEmail()">
             <label class="title">Join FlickerPix!</label>
             <div class="names">
                 <div class="form-component">
@@ -46,7 +48,7 @@ const register = () => {
             </div>
             <div class="form-component">
                 <label>Re-enter Password:</label>
-                <input class="register-input" v-model="rePassword" type="password" required>
+                <input class="register-input" v-model="userInfo.rePassword" type="password" required>
             </div>
             <button type="submit" class="button">Sign Up!</button>
             <RouterLink to="/login" class="link">Already have an account? Sign in!</RouterLink>
