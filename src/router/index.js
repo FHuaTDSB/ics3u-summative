@@ -7,7 +7,7 @@ import DetailsView from '../views/DetailsView.vue';
 import CartView from '../views/CartView.vue';
 import SettingsView from '../views/SettingsView.vue';
 import ErrorView from '@/views/ErrorView.vue';
-import { useStore } from '@/store';
+import { useStore, userAuthorised } from '@/store';
 
 const routes = [
   { path: '/', meta: { auth: false }, component: HomeView, },
@@ -25,16 +25,22 @@ const router = createRouter({
   routes,
 })
 
-//router.beforeEach((to, from, next) => {
-  //userAuthorised.then(() => {
-    //const store = useStore();
-
-    //if (!store.user && to.meta.auth) {
-      //next("/login");
-    //} else {
-      //next();
-    //}
-  //})
-//})
+router.beforeEach((to, from, next) => {
+  userAuthorised.then(() => {
+    const store = useStore();
+    if (!store.user && to.meta.auth) {
+      next("/login");
+    } else {
+      next();
+    }
+  })
+  .catch(error => {
+    if (to.meta.auth) {
+      next("/login");
+    } else {
+      next();
+    }
+  })
+});
 
 export default router

@@ -8,17 +8,23 @@ import { createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleA
 import { auth } from '@/firebase';
 
 const router = useRouter();
-const userInfo = ref({ firstName: "", lastName: "", email: "", password: "", rePassword: "" });
+const firstName = ref("")
+const lastName = ref("")
+const email = ref("")
+const password = ref("")
+const rePassword = ref("")
 const store = useStore();
 
 async function registerbyEmail() {
     try {
-        const user = (await createUserWithEmailAndPassword(auth, userInfo.value.email, userInfo.value.password)).user;
-        await updateProfile(user, { displayName: `${userInfo.value.firstName}` `${userInfo.value.lastName}` });
-        store.user = user;
-        router.push("/movies");
+        const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
+        await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
+        console.log(user)
+        //store.user = user;
+        //router.push("/movies");
     } catch (error) {
         alert("There was an error creating a user with email!")
+        console.log(error)
     }
 }
 </script>
@@ -31,24 +37,24 @@ async function registerbyEmail() {
             <div class="names">
                 <div class="form-component">
                     <label>First Name:</label>
-                    <input class="register-input" v-model="userInfo.firstName" required>
+                    <input class="register-input" v-model="firstName" required>
                 </div>
                 <div class="form-component">
                     <label>Last Name:</label>
-                    <input class="register-input" v-model="userInfo.lastName" required>
+                    <input class="register-input" v-model="lastName" required>
                 </div>
             </div>
             <div class="form-component">
                 <label>Email:</label>
-                <input type="email" class="register-input" v-model="userInfo.email" required>
+                <input type="email" class="register-input" v-model="email" required>
             </div>
             <div class="form-component">
                 <label>Password:</label>
-                <input class="register-input" v-model="userInfo.password" type="password" required>
+                <input class="register-input" v-model="password" type="password" required>
             </div>
             <div class="form-component">
                 <label>Re-enter Password:</label>
-                <input class="register-input" v-model="userInfo.rePassword" type="password" required>
+                <input class="register-input" v-model="rePassword" type="password" required>
             </div>
             <button type="submit" class="button">Sign Up!</button>
             <RouterLink to="/login" class="link">Already have an account? Sign in!</RouterLink>
