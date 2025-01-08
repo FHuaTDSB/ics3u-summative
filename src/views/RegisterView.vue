@@ -16,16 +16,19 @@ const rePassword = ref("")
 const store = useStore();
 
 async function registerbyEmail() {
-    try {
-        const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
-        await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
-        console.log(user)
-        //store.user = user;
-        //router.push("/movies");
-    } catch (error) {
-        alert("There was an error creating a user with email!")
-        console.log(error)
+    if (password.value == rePassword.value) {
+        try {
+            const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
+            await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
+            store.user = user;
+            router.push("/movies");
+        } catch (error) {
+            alert("There was an error creating a user with email!")
+        }
+    } else {
+        alert("Passwords must match!")
     }
+
 }
 </script>
 

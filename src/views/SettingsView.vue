@@ -3,16 +3,19 @@ import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import { useStore } from '../store';
 import { ref } from 'vue';
+import { updateProfile } from 'firebase/auth';
 
 const store = useStore();
-const firstName = ref(store.userInfo.firstName);
-const lastName = ref(store.userInfo.lastName);
-const email = store.userInfo.email;
-function updateUserInfo() {
-    console.log(firstName.value)
-    store.userInfo.firstName = firstName.value;
-    store.userInfo.lastName = lastName.value;
-    alert("Successfully updated user info!");
+const name = ref(store.user.displayName);
+const email = store.user.email;
+
+async function updateUserInfo() {
+    try {
+        await updateProfile(store.user, { displayName: `${name.value}` });
+        alert("Successfully updated user info!");
+    } catch (error) {
+        alert("Couldn't update user info!")
+    }
 }
 </script>
 
@@ -22,12 +25,8 @@ function updateUserInfo() {
         <form @submit.prevent>
             <div class="form-section">
                 <h2>Your settings</h2>
-                <label>First Name:</label>
-                <input v-model:="firstName" class="display">
-            </div>
-            <div class="form-section">
-                <label>Last Name:</label>
-                <input v-model:="lastName" class="display">
+                <label>Name:</label>
+                <input v-model:="name" class="display">
             </div>
             <div class="form-section">
                 <label>Email:</label>

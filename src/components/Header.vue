@@ -1,13 +1,16 @@
 <script setup>
 import { RouterLink, useRouter } from 'vue-router';
 import { useStore } from '../store';
+import { auth } from '@/firebase';
+import { signOut } from 'firebase/auth';
 
 const store = useStore()
 const router = useRouter()
 
 const logout = () => {
     router.push("/")
-    console.log(store.userInfo)
+    store.user = null
+    signOut(auth)
 }
 </script>
 
@@ -18,12 +21,12 @@ const logout = () => {
                 <img src="/src/assets/logo.png" alt="FlickerPix Logo">
                 <h2 class="logo-text">FlickerPix</h2>
             </RouterLink>
-            <div class="header-content wide" v-if="store.userInfo.firstName == null">
+            <div class="header-content wide" v-if="!store.user">
                 <RouterLink to="/register" class="button">Sign Up</RouterLink>
                 <RouterLink to="/login" class="button">Sign In</RouterLink>
             </div>
             <form class="header-content wide" v-else>
-                <p>{{ `Hi ${store.userInfo.firstName}! Ready to binge?` }}</p>
+                <p>{{ `Hi ${store.user.displayName}! Ready to binge?` }}</p>
                 <RouterLink to="/cart" class="button-alt"><img src="/src/assets/flickerpix_cart.png"
                         alt="Shopping cart"></RouterLink>
                 <RouterLink to="/settings" class="button-alt"><img src="/src/assets/flickerpix_settings.png"
