@@ -5,10 +5,9 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 export const useStore = defineStore('store', () => {
   const cart = ref(new Map());
-  const userInfo = ref({ firstName: null, lastName: null, email: null, password: null })
   const user = ref(null)
 
-  return { userInfo, cart, user };
+  return { cart, user };
 })
 
 export const userAuthorised = new Promise((resolve, reject) => {

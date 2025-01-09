@@ -19,7 +19,7 @@ const featuredMovie = (response.data.results[Math.floor(Math.random() * 4)])
                 FlickerPix and enjoy all of YOUR top picks in high quality and multilingual
                 subtitles, uninterrupted! For a low subscription fee, your viewing experiences
                 will be like never before!</p>
-            <RouterLink to="/register" class="button" v-if="store.userInfo.loggedIn==false">Start your free trial!</RouterLink>
+            <RouterLink to="/register" class="button" v-if="!store.user">Start your free trial!</RouterLink>
             <RouterLink to="/movies" class="button" v-else>Brows films now!</RouterLink>
         </div>
         <div class="hero-content-poster">

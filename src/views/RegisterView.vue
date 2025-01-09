@@ -28,6 +28,16 @@ async function registerbyEmail() {
     } else {
         alert("Passwords must match!")
     }
+}
+
+async function registerWithGoogle() {
+    try {
+        const user = ((await signInWithPopup(auth, new GoogleAuthProvider)).user)
+        store.user = user
+        router.push("/movies")
+    } catch (error) {
+        alert("There was an error creating a user with Google!")
+    }
 
 }
 </script>
@@ -35,33 +45,36 @@ async function registerbyEmail() {
 <template>
     <Header />
     <div class="register">
-        <form @submit.prevent="registerbyEmail()">
-            <label class="title">Join FlickerPix!</label>
-            <div class="names">
-                <div class="form-component">
-                    <label>First Name:</label>
-                    <input class="register-input" v-model="firstName" required>
+        <div class="sign-up-window">
+            <form @submit.prevent="registerbyEmail()">
+                <label class="title">Join FlickerPix!</label>
+                <div class="names">
+                    <div class="form-component">
+                        <label>First Name:</label>
+                        <input class="register-input" v-model="firstName" required>
+                    </div>
+                    <div class="form-component">
+                        <label>Last Name:</label>
+                        <input class="register-input" v-model="lastName" required>
+                    </div>
                 </div>
                 <div class="form-component">
-                    <label>Last Name:</label>
-                    <input class="register-input" v-model="lastName" required>
+                    <label>Email:</label>
+                    <input type="email" class="register-input" v-model="email" required>
                 </div>
-            </div>
-            <div class="form-component">
-                <label>Email:</label>
-                <input type="email" class="register-input" v-model="email" required>
-            </div>
-            <div class="form-component">
-                <label>Password:</label>
-                <input class="register-input" v-model="password" type="password" required>
-            </div>
-            <div class="form-component">
-                <label>Re-enter Password:</label>
-                <input class="register-input" v-model="rePassword" type="password" required>
-            </div>
-            <button type="submit" class="button">Sign Up!</button>
+                <div class="form-component">
+                    <label>Password:</label>
+                    <input class="register-input" v-model="password" type="password" required>
+                </div>
+                <div class="form-component">
+                    <label>Re-enter Password:</label>
+                    <input class="register-input" v-model="rePassword" type="password" required>
+                </div>
+                <button type="submit" class="button">Sign Up!</button>
+            </form>
+            <button class="button2" @click="registerWithGoogle()">Sign up with Google!</button>
             <RouterLink to="/login" class="link">Already have an account? Sign in!</RouterLink>
-        </form>
+        </div>
     </div>
     <div class="break" />
     <Footer />
@@ -77,15 +90,21 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: aliceblue;
-    height: 500px;
-    width: 500px;
-    margin-top: 5%;
-    justify-content: center;
 }
 
 label {
     font-size: 20px;
+}
+
+.sign-up-window {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: aliceblue;
+    height: 550px;
+    width: 500px;
+    margin-top: 5%;
 }
 
 .register-input {
@@ -137,10 +156,33 @@ label {
     justify-content: center;
     text-decoration: none;
     transition: background-color 0.1s;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .button:hover {
+    background-color: rgb(192, 246, 255);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.button2 {
+    background-color: aliceblue;
+    color: black;
+    border-color: rgb(192, 246, 255);
+    border-style: inset;
+    border-width: 3px;
+    height: 30px;
+    width: 200px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 0.1s;
+    margin-top: 20px;
+}
+
+.button2:hover {
     background-color: rgb(192, 246, 255);
     text-decoration: underline;
     cursor: pointer;
