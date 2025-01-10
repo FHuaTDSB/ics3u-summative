@@ -3,17 +3,23 @@ import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import { RouterLink, useRouter } from 'vue-router';
 import { ref } from 'vue';
+import { useStore } from '@/store';
+import { auth } from '@/firebase';
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 
 const router = useRouter();
 const email = ref("");
 const password = ref("");
+const store = useStore();
 
-const login = () => {
-    if (password.value == "123") {
-        router.push("/movies");
-    }
-    else {
-        alert("Invalid email or password");
+const loginByEmail = async () => {
+    try {
+        const user = ((await signInWithEmailAndPassword(auth, email.value, password.value)).user)
+        store.user = user
+        router.push("/movies")
+    } catch (error) {
+        console.log(error)
+        alert("Couldn't log in with email!")
     }
 }
 </script>
@@ -21,19 +27,21 @@ const login = () => {
 <template>
     <Header />
     <div class="login">
-        <form @submit.prevent="login">
-            <label class="title">Welcome back!</label>
-            <div class="form-component">
-                <label>Email:</label>
-                <input type="email" v-model:="email" class="login-input" required>
-            </div>
-            <div class="form-component">
-                <label>Password:</label>
-                <input v-model:="password" type="password" class="login-input" required>
-            </div>
-            <button type="submit" class="button">Sign In</button>
+        <div class="login-window">
+            <form @submit.prevent="loginByEmail()">
+                <label class="title">Welcome back!</label>
+                <div class="form-component">
+                    <label>Email:</label>
+                    <input type="email" v-model:="email" class="login-input" required>
+                </div>
+                <div class="form-component">
+                    <label>Password:</label>
+                    <input v-model:="password" type="password" class="login-input" required>
+                </div>
+                <button type="submit" class="button">Sign In</button>
+            </form>
             <RouterLink to="/register" class="link">Don't have an account? Sign up!</RouterLink>
-        </form>
+        </div>
     </div>
     <div class="break" />
     <Footer />
@@ -49,15 +57,20 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+label {
+    font-size: 20px;
+}
+
+.login-window {
+    display: flex;
+    flex-direction: column;
     background-color: aliceblue;
     height: 500px;
     width: 500px;
     margin-top: 5%;
     justify-content: center;
-}
-
-label {
-    font-size: 20px;
 }
 
 .link {
