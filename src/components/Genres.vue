@@ -12,11 +12,15 @@ const store = useStore();
 
 async function getMovieByGenre() {
     response.value = await axios.get(`https://api.themoviedb.org/3/discover/movie?api_key=${import.meta.env.VITE_TMDB_KEY}&with_genres=${selectedGenre.value}`);
-    console.log(response.value)
 }
 
 function getMovieDetails(id) {
-    router.push(`/movies/${id}`)
+    router.push(`/movies/${id}`);
+}
+
+const addToCart = (movie) => {
+    store.cart.set(movie.id, { title: movie.title, url: movie.poster_path });
+    localStorage.setItem(`cart_${store.user.email}`, JSON.stringify(Object.fromEntries(store.cart)));
 }
 
 onMounted(async () => {
@@ -34,7 +38,7 @@ onMounted(async () => {
                 <p v-if="store.cart.has(movie.id)" class="movie-added">
                     Added!
                 </p>
-                <button v-else @click="store.cart.set(movie.id, { title: movie.title, url: movie.poster_path })">
+                <button v-else @click="addToCart(movie)">
                     Buy now!
                     <img src="/src/assets/flickerpix_cart.png">
                 </button>

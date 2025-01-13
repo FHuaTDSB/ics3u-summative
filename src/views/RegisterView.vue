@@ -17,13 +17,18 @@ const store = useStore();
 
 async function registerbyEmail() {
     if (password.value == rePassword.value) {
-        try {
-            const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
-            await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
-            store.user = user;
-            router.push("/movies");
-        } catch (error) {
-            alert("There was an error creating a user with email!")
+        if (password.value.length >= 6) {
+            try {
+                const user = (await createUserWithEmailAndPassword(auth, email.value, password.value)).user;
+                await updateProfile(user, { displayName: `${firstName.value} ${lastName.value}` });
+                store.user = user;
+                router.push("/movies");
+            } catch (error) {
+                alert("There was an error creating a user with email!")
+            }
+        }
+        else {
+            alert("Password must be at least 6 characters long!")
         }
     } else {
         alert("Passwords must match!")
@@ -90,6 +95,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 90%;
 }
 
 label {

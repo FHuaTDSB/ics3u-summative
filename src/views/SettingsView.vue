@@ -9,6 +9,8 @@ const store = useStore();
 const name = ref(store.user.displayName);
 const email = store.user.email;
 
+console.log(store.user)
+
 async function updateUserInfo() {
     try {
         await updateProfile(store.user, { displayName: `${name.value}` });
@@ -56,7 +58,7 @@ label {
     width: 100%;
     height: 726px;
     display: flex;
-    background-image: url(/src/assets/flickerpix_placeholder.png);
+    background-image: url(/src/assets/flickerpix_settings_bg.png);
     flex-direction: column;
     align-items: center;
 }

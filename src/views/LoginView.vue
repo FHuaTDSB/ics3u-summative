@@ -14,12 +14,21 @@ const store = useStore();
 
 const loginByEmail = async () => {
     try {
-        const user = ((await signInWithEmailAndPassword(auth, email.value, password.value)).user)
-        store.user = user
-        router.push("/movies")
+        const user = ((await signInWithEmailAndPassword(auth, email.value, password.value)).user);
+        store.user = user;
+        router.push("/movies");
     } catch (error) {
-        console.log(error)
-        alert("Couldn't log in with email!")
+        alert("Couldn't log in with email!");
+    }
+}
+
+const loginWithGoogle = async () => {
+    try {
+        const user = ((await signInWithPopup(auth, new GoogleAuthProvider)).user);
+        store.user = user;
+        router.push("/movies");
+    } catch (error) {
+        alert("Couldn't log in with Google!");
     }
 }
 </script>
@@ -40,6 +49,7 @@ const loginByEmail = async () => {
                 </div>
                 <button type="submit" class="button">Sign In</button>
             </form>
+            <button class="button2" @click="loginWithGoogle()">Log in with Google!</button>
             <RouterLink to="/register" class="link">Don't have an account? Sign up!</RouterLink>
         </div>
     </div>
@@ -57,6 +67,7 @@ form {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 90%;
 }
 
 label {
@@ -122,6 +133,29 @@ label {
 }
 
 .button:hover {
+    background-color: rgb(192, 246, 255);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.button2 {
+    background-color: aliceblue;
+    color: black;
+    border-color: rgb(192, 246, 255);
+    border-style: inset;
+    border-width: 3px;
+    height: 30px;
+    width: 200px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 0.1s;
+    margin-top: 20px;
+}
+
+.button2:hover {
     background-color: rgb(192, 246, 255);
     text-decoration: underline;
     cursor: pointer;
