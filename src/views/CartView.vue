@@ -4,6 +4,19 @@ import Footer from '../components/Footer.vue';
 import { useStore } from '../store';
 
 const store = useStore();
+
+function checkout() {
+    if (store.cart.size >= 1) {
+        store.cart.clear()
+        localStorage.clear(`cart_${store.user.email}`);
+        alert("Thank you for your purchase!")
+    }
+}
+
+function deleteMovie(key) {
+    store.cart.delete(key)
+    localStorage.setItem(`cart_${store.user.email}`, JSON.stringify(Object.fromEntries(store.cart)));
+}
 </script>
 
 <template>
@@ -12,12 +25,21 @@ const store = useStore();
         <div class="main-title-box">
             <h1>Shopping Cart</h1>
         </div>
+        <button @click="checkout()">
+            Checkout
+            <img src="/src/assets/flickerpix_cart.png" alt="Shopping cart">
+        </button>
+        <div v-if="store.cart.size == 0" class="empty-cart">
+            <h2 class="movieless-text">No movies, only sadness...</h2>
+            <img src="/src/assets/flickerpix_movieless.png">
+            <RouterLink to="/movies" class="link">Back to browsing!</RouterLink>
+        </div>
         <div class="gallery">
             <div class="item" v-for="([key, movie]) in store.cart">
-                <button @click="store.cart.delete(key)">Remove</button>
+                <button @click="deleteMovie(key)">Remove</button>
                 <div>
                     <img src="/src/assets/frame-2.png" alt="Small picture frame" class="frame">
-                    <img :src="`https://image.tmdb.org/t/p/w500${movie.url}`" />
+                    <img :src="`https://image.tmdb.org/t/p/w500${movie.url}`" class="poster" />
                 </div>
                 <div class="title-box">
                     <h2>{{ movie.title }}</h2>
@@ -63,7 +85,24 @@ button:hover {
     cursor: pointer;
 }
 
-img {
+.movieless-text {
+    font-size: 50px;
+    color: rgb(17, 129, 77);
+}
+
+.link {
+    font-size: 30px;
+    color: rgb(27, 187, 112);
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.link:hover {
+    text-decoration: underline;
+    color: rgb(17, 129, 77);
+}
+
+.poster {
     height: 353px;
     width: 239px;
 }
@@ -71,7 +110,7 @@ img {
 .main {
     display: flex;
     flex-direction: column;
-    background-image: url(/src/assets/flickerpix_placeholder.png);
+    background-image: url(/src/assets/flickerpix_movies.png);
     align-items: center;
     row-gap: 30px;
     min-height: 726px;
@@ -117,5 +156,15 @@ img {
     position: absolute;
     height: 364px;
     width: 250px;
+}
+
+.empty-cart {
+    height: 480px;
+    width: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(9, 4, 24, 0.8);
+    flex-direction: column;
 }
 </style>

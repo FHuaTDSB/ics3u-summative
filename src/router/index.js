@@ -8,6 +8,7 @@ import CartView from '../views/CartView.vue';
 import SettingsView from '../views/SettingsView.vue';
 import ErrorView from '@/views/ErrorView.vue';
 import { useStore, userAuthorised } from '@/store';
+import { storeToRefs } from 'pinia';
 
 const routes = [
   { path: '/', meta: { auth: false }, component: HomeView, },
@@ -30,8 +31,9 @@ router.beforeEach((to, from, next) => {
     next();
   })
     .catch(error => {
+      const store = useStore()
       console.log(error)
-      if (to.meta.auth) {
+      if (!store.user && to.meta.auth) {
         next("/login");
       } else {
         next();
