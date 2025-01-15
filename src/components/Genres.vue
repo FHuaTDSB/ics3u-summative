@@ -19,7 +19,7 @@ function getMovieDetails(id) {
 }
 
 const addToCart = (movie) => {
-    store.cart.set(movie.id, { title: movie.title, url: movie.poster_path });
+    store.cart.set(String(movie.id), { title: movie.title, url: movie.poster_path });
     localStorage.setItem(`cart_${store.user.email}`, JSON.stringify(Object.fromEntries(store.cart)));
 }
 
@@ -35,7 +35,7 @@ onMounted(async () => {
         </select>
         <div v-if="response" class="gallery">
             <div v-for="movie in response.data.results" key="movie.id" class="movie">
-                <p v-if="store.cart.has(movie.id)" class="movie-added">
+                <p v-if="store.cart.has(String(movie.id))" class="movie-added">
                     Added!
                 </p>
                 <button v-else @click="addToCart(movie)">

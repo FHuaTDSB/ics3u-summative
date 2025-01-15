@@ -3,20 +3,30 @@ import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import { useStore } from '../store';
 import { ref } from 'vue';
-import { updateProfile } from 'firebase/auth';
+import { updateProfile, updatePassword } from 'firebase/auth';
 
 const store = useStore();
 const name = ref(store.user.displayName);
 const email = store.user.email;
+const password = ref(null)
 
 console.log(store.user)
 
 async function updateUserInfo() {
-    try {
-        await updateProfile(store.user, { displayName: `${name.value}` });
-        alert("Successfully updated user info!");
-    } catch (error) {
-        alert("Couldn't update user info!")
+    if (store.user.providerData[0].providerId != "google.com") {
+        try {
+            if (store.user.displayName != name.value) {
+                await updateProfile(store.user, { displayName: `${name.value}` });
+            }
+            if (password.value != null) {
+                await updatePassword(store.user, password.value)
+            }
+            alert("Successfully updated user info!");
+        } catch (error) {
+            alert("Couldn't update user info!")
+        }
+    } else {
+        alert("Can not update user info with Google!")
     }
 }
 </script>
@@ -33,6 +43,10 @@ async function updateUserInfo() {
             <div class="form-section">
                 <label>Email:</label>
                 <input v-model:="email" class="display" readonly>
+            </div>
+            <div class="form-section">
+                <label>Change password:</label>
+                <input v-model:="password" class="display" type="password">
             </div>
             <div class="form-section">
                 <button v-on:click="updateUserInfo()">Update info!</button>
