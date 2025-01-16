@@ -3,26 +3,26 @@ import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import { useStore } from '../store';
 import { ref } from 'vue';
-import { updateProfile, updatePassword } from 'firebase/auth';
+import { updateProfile, updatePassword, reauthenticateWithCredential, AuthCredential } from 'firebase/auth';
 
 const store = useStore();
-const name = ref(store.user.displayName);
+const name = store.user.displayName.split(" ");
 const email = store.user.email;
 const password = ref(null)
-
-console.log(store.user)
+const rePassword = ref(null)
+const cred = new AuthCredential(email.value, password.value)
 
 async function updateUserInfo() {
     if (store.user.providerData[0].providerId != "google.com") {
         try {
-            if (store.user.displayName != name.value) {
-                await updateProfile(store.user, { displayName: `${name.value}` });
-            }
+            await updateProfile(store.user, { displayName: `${name[0]} ${name[1]}` });
             if (password.value != null) {
-                await updatePassword(store.user, password.value)
+                reauthenticateWithCredential(store.user, cred)
+                await updatePassword(store.user, rePassword.value)
             }
             alert("Successfully updated user info!");
         } catch (error) {
+            console.log(error)
             alert("Couldn't update user info!")
         }
     } else {
@@ -37,15 +37,21 @@ async function updateUserInfo() {
         <form @submit.prevent>
             <div class="form-section">
                 <h2>Your settings</h2>
-                <label>Name:</label>
-                <input v-model:="name" class="display">
+                <label>First Name:</label>
+                <input v-model:="name[0]" class="display">
+            </div>
+            <div class="form-section">
+                <label>Last Name:</label>
+                <input v-model:="name[1]" class="display">
             </div>
             <div class="form-section">
                 <label>Email:</label>
                 <input v-model:="email" class="display" readonly>
             </div>
             <div class="form-section">
-                <label>Change password:</label>
+                <label class="small-label">Change password:</label>
+                <input v-model:="rePassword" class="display" type="password">
+                <label class="small-label">Enter current password:</label>
                 <input v-model:="password" class="display" type="password">
             </div>
             <div class="form-section">
@@ -80,10 +86,10 @@ label {
 form {
     display: flex;
     flex-direction: column;
-    row-gap: 20px;
+    row-gap: 10px;
     align-items: center;
     background-color: aliceblue;
-    height: 500px;
+    height: 600px;
     width: 500px;
     margin-top: 5%;
     justify-content: center;
@@ -124,5 +130,10 @@ button:hover {
     height: 20px;
     border-color: rgb(192, 246, 255);
     border-width: 3px;
+}
+
+.small-label {
+    font-size: 18px;
+    padding-top: 10px;
 }
 </style>
