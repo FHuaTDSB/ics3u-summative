@@ -3,24 +3,25 @@ import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import { useStore } from '../store';
 import { ref } from 'vue';
-import { updateProfile, updatePassword, reauthenticateWithCredential, AuthCredential } from 'firebase/auth';
+import { updateProfile, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 
 const store = useStore();
 const name = store.user.displayName.split(" ");
 const email = store.user.email;
-const password = ref(null)
-const rePassword = ref(null)
-const cred = new AuthCredential(email.value, password.value)
+const password = ref("");
+const rePassword = ref(null);
 
 async function updateUserInfo() {
     if (store.user.providerData[0].providerId != "google.com") {
         try {
             await updateProfile(store.user, { displayName: `${name[0]} ${name[1]}` });
-            if (password.value != null) {
-                reauthenticateWithCredential(store.user, cred)
-                await updatePassword(store.user, rePassword.value)
+            if (password.value != "") {
+                const cred = EmailAuthProvider.credential(email, password.value);
+                await reauthenticateWithCredential(store.user, cred);
+                await updatePassword(store.user, rePassword.value);
             }
             alert("Successfully updated user info!");
+            location.reload()
         } catch (error) {
             console.log(error)
             alert("Couldn't update user info!")

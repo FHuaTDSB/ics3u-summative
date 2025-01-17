@@ -6,6 +6,12 @@ import { signOut } from 'firebase/auth';
 
 const store = useStore()
 const router = useRouter()
+let name = "";
+try {
+    name = store.user.displayName.split(" ");
+} catch (error) { 
+    console.log(error)
+}
 
 const logout = () => {
     router.push("/")
@@ -26,7 +32,7 @@ const logout = () => {
                 <RouterLink to="/login" class="button">Sign In</RouterLink>
             </div>
             <form class="header-content wide" v-else>
-                <p>{{ `Hi ${store.user.displayName}! Ready to binge?` }}</p>
+                <p>{{ `Hi ${name[0]}! Ready to binge?` }}</p>
                 <RouterLink to="/cart" class="button-alt"><img src="/src/assets/flickerpix_cart.png"
                         alt="Shopping cart"></RouterLink>
                 <RouterLink to="/settings" class="button-alt"><img src="/src/assets/flickerpix_settings.png"
