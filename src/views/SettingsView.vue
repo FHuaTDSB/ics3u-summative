@@ -15,16 +15,27 @@ async function updateUserInfo() {
     if (store.user.providerData[0].providerId != "google.com") {
         try {
             await updateProfile(store.user, { displayName: `${name[0]} ${name[1]}` });
-            if (password.value != "") {
+            alert("Successfully update user info!")
+            location.reload()
+        } catch (error) {
+            alert("Couldn't update user info!")
+        }
+    } else {
+        alert("Can not update user info with Google!")
+    }
+}
+
+async function updateUserPassword() {
+    if (store.user.providerData[0].providerId != "google.com") {
+        try {
+            if (password.value.length >= 6) {
                 const cred = EmailAuthProvider.credential(email, password.value);
                 await reauthenticateWithCredential(store.user, cred);
                 await updatePassword(store.user, rePassword.value);
+                alert("Successfully updated password!");
             }
-            alert("Successfully updated user info!");
-            location.reload()
         } catch (error) {
-            console.log(error)
-            alert("Couldn't update user info!")
+            alert("Couldn't update password!")
         }
     } else {
         alert("Can not update user info with Google!")
@@ -48,15 +59,14 @@ async function updateUserInfo() {
             <div class="form-section">
                 <label>Email:</label>
                 <input v-model:="email" class="display" readonly>
+                <button v-on:click="updateUserInfo()">Update info!</button>
             </div>
             <div class="form-section">
                 <label class="small-label">Change password:</label>
                 <input v-model:="rePassword" class="display" type="password">
                 <label class="small-label">Enter current password:</label>
                 <input v-model:="password" class="display" type="password">
-            </div>
-            <div class="form-section">
-                <button v-on:click="updateUserInfo()">Update info!</button>
+                <button v-on:click="updateUserPassword()">Update password!</button>
             </div>
         </form>
     </div>
@@ -90,9 +100,9 @@ form {
     row-gap: 10px;
     align-items: center;
     background-color: aliceblue;
-    height: 600px;
+    height: 650px;
     width: 500px;
-    margin-top: 5%;
+    margin-top: 2%;
     justify-content: center;
 }
 
@@ -103,13 +113,14 @@ button {
     border-style: inset;
     border-width: 3px;
     height: 40px;
-    width: 200px;
+    width: 300px;
     font-size: 30px;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     transition: background-color 0.1s;
+    margin-top: 15px;
 }
 
 button:hover {
